@@ -7,9 +7,14 @@ using System.Threading.Tasks;
 
 namespace EmailSenderProgram
 {
-    public static class EmailSender
+    public interface IEmailSender
     {
-        public static async Task SendEmail(MailMessage mailMessage)
+        Task SendEmail(MailMessage mailMessage);
+    }
+
+    public  class EmailSender : IEmailSender
+    {
+        public async Task SendEmail(MailMessage mailMessage)
         {
             //Create a SmtpClient to our smtphost: yoursmtphost
             System.Net.Mail.SmtpClient smtp = new System.Net.Mail.SmtpClient("yoursmtphost");

@@ -11,9 +11,9 @@ namespace EmailSenderProgram
     internal class Program
     {
         private readonly CustomerRepository _customerRepository;
-        public Program()
+        public Program(CustomerRepository customerRepository)
         {
-            _customerRepository = new CustomerRepository();
+            _customerRepository = customerRepository;
         }
 
         /// <summary>
@@ -23,8 +23,8 @@ namespace EmailSenderProgram
         private static void Main(string[] args)
         {
             Console.WriteLine("Send Welcomemail");
-
-            Program program = new Program();
+            
+            Program program = new Program(new CustomerRepository(new EmailSender()));
 
             program.RunProgram();
 
@@ -35,12 +35,20 @@ namespace EmailSenderProgram
         private async Task RunProgram()
         {
             // using await if second one is dependent on first one else not required
-            bool success = await _customerRepository.SendEmailToNewCustomers();
+            bool success = await _customerRepository.CustomerMailSender(EmailType.Welcome);
 
             if (!success)
                 Console.WriteLine("Something went wrong at SendEmailToNewCustomers");
 
-            success = await _customerRepository.CustomerMailSender("EOComebackToUs");
+            success = await _customerRepository.CustomerMailSender(EmailType.WelcomeBack, "EOComebackToUs");
+
+
+            if (!success)
+                Console.WriteLine("Something went wrong at CustomerMailSender");
+
+
+            success = await _customerRepository.CustomerMailSender(EmailType.GoodBye, "EOComebackToUs");
+
 
             if (!success)
                 Console.WriteLine("Something went wrong at CustomerMailSender");
